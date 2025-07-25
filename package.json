@@ -1,0 +1,59 @@
+{
+  "name": "keyboard-nav-concept",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://alex.github.io/keyboard-nav-concept",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.56",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "mobx": "^6.13.7",
+    "mobx-react-lite": "^4.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.7.4",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "prettier": "^3.6.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,css,md}",
+    "format:check": "prettier --check src/**/*.{ts,tsx,js,jsx,json,css,md}"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
