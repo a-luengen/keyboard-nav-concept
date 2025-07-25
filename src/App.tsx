@@ -1,28 +1,26 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import './App.css';
+import Editor from './components/Editor';
 
 const App: React.FC = observer(() => {
   return (
     <div className="App">
       <header className="App-header">
         <h1>Keyboard Navigation Concept</h1>
-        <p>UX Concept implementation for a keyboard navigation system</p>
+        <p>
+          UX Concept implementation for a keyboard based navigation system
+          within sheet editing context.
+        </p>
 
         <div className="keyboard-nav-demo">
           <h2>Keyboard Navigation Demo</h2>
-          <p>Use Tab, Arrow keys, and Enter to navigate</p>
+          <p>
+            Use <kbd>Esc</kbd>, Arrow keys (<kbd>↑</kbd>, <kbd>↓</kbd>,{' '}
+            <kbd>←</kbd>, <kbd>→</kbd>), and <kbd>Enter</kbd> to navigate
+          </p>
           <div className="nav-grid">
-            {Array.from({ length: 9 }, (_, i) => (
-              <button
-                key={i}
-                className="nav-item"
-                tabIndex={0}
-                onClick={() => console.log(`Clicked item ${i + 1}`)}
-              >
-                Item {i + 1}
-              </button>
-            ))}
+            <Editor />
           </div>
         </div>
       </header>
