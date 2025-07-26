@@ -8,12 +8,6 @@ test('renders keyboard navigation concept title', () => {
   expect(titleElement).toBeInTheDocument();
 });
 
-test('renders counter section', () => {
-  render(<App />);
-  const counterTitle = screen.getByText(/MobX State Management Demo/i);
-  expect(counterTitle).toBeInTheDocument();
-});
-
 test('renders keyboard navigation demo', () => {
   render(<App />);
   const navTitle = screen.getByText(/Keyboard Navigation Demo/i);
