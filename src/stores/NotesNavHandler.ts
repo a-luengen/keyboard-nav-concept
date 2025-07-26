@@ -11,8 +11,6 @@ export default class NotesNavHandler implements INavigationHandler {
     const { curSelectionPos, measures, MEASURES_PER_ROW } = this.rootStore;
     const [mIdx, nIdx] = curSelectionPos;
 
-    console.log('Cur Pos: ', mIdx, nIdx);
-
     // new measure position
     let newMeasureIdx = mIdx - MEASURES_PER_ROW;
     if (newMeasureIdx < 0) newMeasureIdx = newMeasureIdx + measures.length;
@@ -22,8 +20,6 @@ export default class NotesNavHandler implements INavigationHandler {
     // new note position
     const newNoteIdx =
       nIdx > newMeasure.notes.length - 1 ? newMeasure.notes.length - 1 : nIdx;
-
-    console.log('new Pos: ', newMeasureIdx, newNoteIdx);
 
     this.rootStore.curSelectionPos = [newMeasureIdx, newNoteIdx];
     this.switchActive([mIdx, nIdx, newMeasureIdx, newNoteIdx]);
