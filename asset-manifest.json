@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/keyboard-nav-concept/static/css/main.c6a3fd94.css",
+    "main.js": "/keyboard-nav-concept/static/js/main.7e8b292d.js",
+    "static/js/453.1b6445a9.chunk.js": "/keyboard-nav-concept/static/js/453.1b6445a9.chunk.js",
+    "index.html": "/keyboard-nav-concept/index.html",
+    "main.c6a3fd94.css.map": "/keyboard-nav-concept/static/css/main.c6a3fd94.css.map",
+    "main.7e8b292d.js.map": "/keyboard-nav-concept/static/js/main.7e8b292d.js.map",
+    "453.1b6445a9.chunk.js.map": "/keyboard-nav-concept/static/js/453.1b6445a9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c6a3fd94.css",
+    "static/js/main.7e8b292d.js"
+  ]
+}
