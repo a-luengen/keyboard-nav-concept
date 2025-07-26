@@ -131,6 +131,9 @@ export class RootStore {
         [1, 2, 3],
         [13, 14],
       ],
+      [[1, 2, 3, 16]],
+      [[9, 4, 5]],
+      [[0, 2, 3, 6]],
     ].forEach((notes, idx) => {
       const notesCollection = Array<NoteData>();
 
