@@ -17,7 +17,6 @@ export default class LISNoteHeadsNavHandler implements INavigationHandler {
     const curNoteHeads = measures[mIdx].notes[nIdx].noteHeads;
 
     const newHeadIdx = nHIdx === 0 ? curNoteHeads.length - 1 : nHIdx - 1;
-    console.log(LISNoteHeadsNavHandler.name, 'up: ', nHIdx, '->', newHeadIdx);
 
     this.rootStore.switchToActive([mIdx, nIdx, newHeadIdx]);
   };
