@@ -8,64 +8,47 @@ export default class MeasureNavHandler implements INavigationHandler {
   }
 
   handleNavUp = () => {
-    const [curMeasureIdx] = this.rootStore.curSelectionPos;
+    const { curSelectionPos, measures, MEASURES_PER_ROW } = this.rootStore;
+    const [mIdx] = curSelectionPos;
 
     let newMeasureIdx = 0;
-    if (curMeasureIdx >= this.rootStore.MEASURES_PER_ROW) {
-      newMeasureIdx = curMeasureIdx - this.rootStore.MEASURES_PER_ROW;
+    if (mIdx >= MEASURES_PER_ROW) {
+      newMeasureIdx = mIdx - MEASURES_PER_ROW;
     } else {
-      const lastFullRowIdx =
-        Math.floor(
-          this.rootStore.measures.length / this.rootStore.MEASURES_PER_ROW
-        ) - 1;
-      const maxRowIdxInLastRow =
-        (this.rootStore.measures.length % this.rootStore.MEASURES_PER_ROW) - 1;
-      if (maxRowIdxInLastRow >= curMeasureIdx) {
+      const lastFullRowIdx = Math.floor(measures.length / MEASURES_PER_ROW) - 1;
+      const maxRowIdxInLastRow = (measures.length % MEASURES_PER_ROW) - 1;
+      if (maxRowIdxInLastRow >= mIdx) {
         // we can use the last row to navigate
-        newMeasureIdx =
-          (lastFullRowIdx + 1) * this.rootStore.MEASURES_PER_ROW +
-          curMeasureIdx;
+        newMeasureIdx = (lastFullRowIdx + 1) * MEASURES_PER_ROW + mIdx;
       } else {
         // we need to jump in the second-last row
-        newMeasureIdx =
-          lastFullRowIdx * this.rootStore.MEASURES_PER_ROW + curMeasureIdx;
+        newMeasureIdx = lastFullRowIdx * MEASURES_PER_ROW + mIdx;
       }
     }
 
-    this.rootStore.curSelectionPos = [newMeasureIdx];
-    this.switchActive(curMeasureIdx, newMeasureIdx);
+    this.rootStore.switchToActive([newMeasureIdx]);
   };
 
   handleNavDown = () => {
     const { curSelectionPos, measures, MEASURES_PER_ROW } = this.rootStore;
-    const [curMeasureIdx] = curSelectionPos;
-    let newMeasureIdx = curMeasureIdx + MEASURES_PER_ROW;
+    const [mIdx] = curSelectionPos;
+    let newMeasureIdx = mIdx + MEASURES_PER_ROW;
     if (newMeasureIdx > measures.length - 1)
       newMeasureIdx = newMeasureIdx % MEASURES_PER_ROW;
-    this.rootStore.curSelectionPos = [newMeasureIdx];
-    this.switchActive(curMeasureIdx, newMeasureIdx);
+    this.rootStore.switchToActive([newMeasureIdx]);
   };
 
   handleNavLeft = () => {
-    const [curMeasureIdx] = this.rootStore.curSelectionPos;
-    const newMeasureIdx = Math.max(curMeasureIdx - 1, 0);
-    this.rootStore.curSelectionPos = [newMeasureIdx];
-    this.switchActive(curMeasureIdx, newMeasureIdx);
+    const { curSelectionPos } = this.rootStore;
+    const [mIdx] = curSelectionPos;
+    const newMeasureIdx = Math.max(mIdx - 1, 0);
+    this.rootStore.switchToActive([newMeasureIdx]);
   };
 
   handleNavRight = () => {
-    const [curMeasureIdx] = this.rootStore.curSelectionPos;
-    const newMeasureIdx = Math.min(
-      curMeasureIdx + 1,
-      this.rootStore.measures.length - 1
-    );
-    this.rootStore.curSelectionPos = [newMeasureIdx];
-    this.switchActive(curMeasureIdx, newMeasureIdx);
+    const { curSelectionPos, measures } = this.rootStore;
+    const [mIdx] = curSelectionPos;
+    const newMeasureIdx = Math.min(mIdx + 1, measures.length - 1);
+    this.rootStore.switchToActive([newMeasureIdx]);
   };
-
-  private switchActive(curMeasureIdx: number, newMeasureIdx: number) {
-    const { measures } = this.rootStore;
-    measures[curMeasureIdx].isActive = false;
-    measures[newMeasureIdx].isActive = true;
-  }
 }
