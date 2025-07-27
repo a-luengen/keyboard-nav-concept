@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import './App.css';
 import Editor from './components/Editor';
+import NavigationTypeDropDown from './components/NavigationTypeDropDown';
 
 const App: React.FC = observer(() => {
   return (
@@ -15,6 +16,7 @@ const App: React.FC = observer(() => {
 
         <div className="keyboard-nav-demo">
           <h2>Keyboard Navigation Demo</h2>
+          <NavigationTypeDropDown />
           <p>
             Use <kbd>Esc</kbd>, Arrow keys (<kbd>↑</kbd>, <kbd>↓</kbd>,{' '}
             <kbd>←</kbd>, <kbd>→</kbd>), and <kbd>Enter</kbd> to navigate

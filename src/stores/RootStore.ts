@@ -1,8 +1,10 @@
 import { makeAutoObservable } from 'mobx';
 import MeasureNavHandler from './MeasureNavHandler';
 import INavigationHandler from './INavigationHandler';
-import NotesNavHandler from './NotesNavHandler';
-import NoteHeadsNavHandler from './NoteHeadsNavHandler';
+import LISNotesNavHandler from './LISNotesNavHandler';
+import LISNoteHeadsNavHandler from './LISNoteHeadsNavHandler';
+import JTNNotesNavHandler from './JTNNotesNavHandler';
+import JTNNotesHeadsNavHandler from './JTNNotesHeadsNavHandler';
 
 export interface NoteHeadData {
   id: string;
@@ -25,10 +27,34 @@ export interface MeasureData {
 export class RootStore {
   measures: Array<MeasureData> = [];
   selectionType: 'measure' | 'note' | 'noteHead' = 'measure';
+  navigationType: 'loop-in-selection' | 'jump-to-next' = 'loop-in-selection';
   curSelectionPos: Array<number> = [0];
   MEASURES_PER_ROW = 4;
 
   navHandler: INavigationHandler = new MeasureNavHandler(this);
+
+  setNavigationType = (
+    newNavigationType: 'loop-in-selection' | 'jump-to-next'
+  ) => {
+    this.navigationType = newNavigationType;
+    this.updateNavigationHandler();
+  };
+
+  private updateNavigationHandler = () => {
+    if (this.selectionType === 'measure') {
+      this.navHandler = new MeasureNavHandler(this);
+    } else if (this.selectionType === 'note') {
+      this.navHandler =
+        this.navigationType === 'jump-to-next'
+          ? new JTNNotesNavHandler(this)
+          : new LISNotesNavHandler(this);
+    } else if (this.selectionType === 'noteHead') {
+      this.navHandler =
+        this.navigationType === 'jump-to-next'
+          ? new JTNNotesHeadsNavHandler(this)
+          : new LISNoteHeadsNavHandler(this);
+    }
+  };
 
   constructor() {
     makeAutoObservable(this);
@@ -72,7 +98,10 @@ export class RootStore {
       this.measures[mIdx].isActive = false;
       this.measures[mIdx].notes[nIdx].isActive = true;
       this.curSelectionPos = newSelectionPos;
-      this.navHandler = new NotesNavHandler(this);
+      this.navHandler =
+        this.navigationType === 'jump-to-next'
+          ? new JTNNotesNavHandler(this)
+          : new LISNotesNavHandler(this);
     } else if (this.selectionType === 'note') {
       this.selectionType = 'noteHead';
       const [mIdx, nIdx] = this.curSelectionPos;
@@ -80,7 +109,10 @@ export class RootStore {
       this.measures[mIdx].notes[nIdx].isActive = false;
       this.measures[mIdx].notes[nIdx].noteHeads[0].isActive = true;
       this.curSelectionPos = [mIdx, nIdx, 0];
-      this.navHandler = new NoteHeadsNavHandler(this);
+      this.navHandler =
+        this.navigationType === 'jump-to-next'
+          ? new JTNNotesHeadsNavHandler(this)
+          : new LISNoteHeadsNavHandler(this);
     } else if (this.selectionType === 'noteHead') {
       return;
     }
@@ -103,7 +135,47 @@ export class RootStore {
       this.measures[mIdx].notes[nIdx].isActive = true;
       this.measures[mIdx].notes[nIdx].noteHeads[nhIdx].isActive = false;
       this.curSelectionPos = [mIdx, nIdx];
-      this.navHandler = new NotesNavHandler(this);
+      this.navHandler =
+        this.navigationType === 'jump-to-next'
+          ? new JTNNotesNavHandler(this)
+          : new LISNotesNavHandler(this);
+    }
+  };
+
+  switchToActive = (
+    newPos: [number] | [number, number] | [number, number, number]
+  ) => {
+    const [mIdx, nIdx, nhIdx] = this.curSelectionPos;
+    if (newPos.length !== this.curSelectionPos.length) {
+      throw new Error(
+        'Invalid new position length ' +
+          this.curSelectionPos +
+          newPos +
+          this.selectionType
+      );
+    } else if (newPos.length === 1) {
+      const [newMeasureIdx] = newPos;
+      this.measures[mIdx].isActive = false;
+      this.measures[newMeasureIdx].isActive = true;
+      this.curSelectionPos = newPos;
+    } else if (newPos.length === 2) {
+      const [newMeasureIdx, newNoteIdx] = newPos;
+      this.measures[mIdx].isActive = false;
+      this.measures[mIdx].notes[nIdx].isActive = false;
+      this.measures[newMeasureIdx].isActive = false;
+      this.measures[newMeasureIdx].notes[newNoteIdx].isActive = true;
+      this.curSelectionPos = newPos;
+    } else if (newPos.length === 3) {
+      const [newMeasureIdx, newNoteIdx, newNoteHeadIdx] = newPos;
+      this.measures[mIdx].isActive = false;
+      this.measures[mIdx].notes[nIdx].isActive = false;
+      this.measures[mIdx].notes[nIdx].noteHeads[nhIdx].isActive = false;
+      this.measures[newMeasureIdx].isActive = false;
+      this.measures[newMeasureIdx].notes[newNoteIdx].isActive = false;
+      this.measures[newMeasureIdx].notes[newNoteIdx].noteHeads[
+        newNoteHeadIdx
+      ].isActive = true;
+      this.curSelectionPos = newPos;
     }
   };
 
