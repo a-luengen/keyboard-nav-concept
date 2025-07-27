@@ -63,8 +63,6 @@ export class RootStore {
 
   handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault();
-    if (event.repeat) return;
-    console.log('Pressed', event);
 
     switch (event.key) {
       case 'ArrowUp':
@@ -206,6 +204,21 @@ export class RootStore {
       [[1, 2, 3, 16]],
       [[9, 4, 5]],
       [[0, 2, 3, 6]],
+      [
+        [1, 3, 4],
+        [9, 8, 7],
+        [4, 5, 6],
+        [2, 4, 5],
+        [1, 2],
+      ],
+      [
+        [1, 2, 3],
+        [6, 8, 6],
+      ],
+      [[1, 2, 3], [1, 2, 3], [1, 2, 3, 4], [1]],
+      [[2], [4, 5, 6], [5, 6, 7], [1, 2, 3], [1, 2, 3, 4]],
+      [[1, 2, 3], [1, 2, 3], [1, 2, 3, 4], [1]],
+      [[1, 2, 3], [1, 2, 3], [1, 2, 3, 4], [1]],
     ].forEach((notes, idx) => {
       const notesCollection = Array<NoteData>();
 
