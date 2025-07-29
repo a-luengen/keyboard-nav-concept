@@ -69,8 +69,8 @@ export default class JTNNotesHeadsNavHandler implements INavigationHandler {
       newHeadIdx = Math.min(nHIdx, newNotes[newNoteIdx].noteHeads.length - 1);
     } else {
       newNoteIdx = nIdx - 1;
-      const newNotes = measures[newNoteIdx].notes;
-      newHeadIdx = Math.min(nHIdx, newNotes[newNoteIdx].noteHeads.length - 1);
+      const curNotes = measures[newMeasureIdx].notes;
+      newHeadIdx = Math.min(nHIdx, curNotes[newNoteIdx].noteHeads.length - 1);
     }
     this.rootStore.switchToActive([newMeasureIdx, newNoteIdx, newHeadIdx]);
   };
@@ -85,15 +85,14 @@ export default class JTNNotesHeadsNavHandler implements INavigationHandler {
     let newNoteIdx = nIdx;
     let newHeadIdx = nHIdx;
     if (nIdx === curNotes.length - 1) {
-      if (mIdx === measures.length - 1) return; // there is no more measure left
+      if (mIdx === measures.length - 1) return; // there is no more measure to the right
       newMeasureIdx = mIdx + 1;
       newNoteIdx = 0;
       const newNoteHeads = measures[newMeasureIdx].notes[newNoteIdx].noteHeads;
       newHeadIdx = Math.min(nHIdx, newNoteHeads.length - 1);
     } else {
       newNoteIdx = nIdx + 1;
-      const newNotes = measures[newNoteIdx].notes;
-      newHeadIdx = Math.min(nHIdx, newNotes[newNoteIdx].noteHeads.length - 1);
+      newHeadIdx = Math.min(nHIdx, curNotes[newNoteIdx].noteHeads.length - 1);
     }
 
     this.rootStore.switchToActive([newMeasureIdx, newNoteIdx, newHeadIdx]);
