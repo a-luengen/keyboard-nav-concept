@@ -91,11 +91,7 @@ export class RootStore {
   handleSelect = () => {
     if (this.selectionType === 'measure') {
       this.selectionType = 'note';
-      const newSelectionPos = [this.curSelectionPos[0], 0];
-      const [mIdx, nIdx] = newSelectionPos;
-      this.measures[mIdx].isActive = false;
-      this.measures[mIdx].notes[nIdx].isActive = true;
-      this.curSelectionPos = newSelectionPos;
+      this.switchToActive([this.curSelectionPos[0], 0]);
       this.navHandler =
         this.navigationType === 'jump-to-next'
           ? new JTNNotesNavHandler(this)
@@ -103,10 +99,7 @@ export class RootStore {
     } else if (this.selectionType === 'note') {
       this.selectionType = 'noteHead';
       const [mIdx, nIdx] = this.curSelectionPos;
-      this.measures[mIdx].isActive = false;
-      this.measures[mIdx].notes[nIdx].isActive = false;
-      this.measures[mIdx].notes[nIdx].noteHeads[0].isActive = true;
-      this.curSelectionPos = [mIdx, nIdx, 0];
+      this.switchToActive([mIdx, nIdx, 0]);
       this.navHandler =
         this.navigationType === 'jump-to-next'
           ? new JTNNotesHeadsNavHandler(this)
@@ -121,18 +114,11 @@ export class RootStore {
       return;
     } else if (this.selectionType === 'note') {
       this.selectionType = 'measure';
-      const [mIdx, nIdx] = this.curSelectionPos;
-      this.measures[mIdx].notes[nIdx].isActive = false;
-      this.measures[mIdx].isActive = true;
-      this.curSelectionPos = [mIdx];
+      this.switchToActive([this.curSelectionPos[0]]);
       this.navHandler = new MeasureNavHandler(this);
     } else if (this.selectionType === 'noteHead') {
       this.selectionType = 'note';
-      const [mIdx, nIdx, nhIdx] = this.curSelectionPos;
-      this.measures[mIdx].isActive = false;
-      this.measures[mIdx].notes[nIdx].isActive = true;
-      this.measures[mIdx].notes[nIdx].noteHeads[nhIdx].isActive = false;
-      this.curSelectionPos = [mIdx, nIdx];
+      this.switchToActive([this.curSelectionPos[0], this.curSelectionPos[1]]);
       this.navHandler =
         this.navigationType === 'jump-to-next'
           ? new JTNNotesNavHandler(this)
@@ -143,38 +129,50 @@ export class RootStore {
   switchToActive = (
     newPos: [number] | [number, number] | [number, number, number]
   ) => {
-    const [mIdx, nIdx, nhIdx] = this.curSelectionPos;
-    if (newPos.length !== this.curSelectionPos.length) {
+    if (newPos.length > 3) {
       throw new Error(
         'Invalid new position length ' +
           this.curSelectionPos +
           newPos +
           this.selectionType
       );
-    } else if (newPos.length === 1) {
-      const [newMeasureIdx] = newPos;
-      this.measures[mIdx].isActive = false;
-      this.measures[newMeasureIdx].isActive = true;
-      this.curSelectionPos = newPos;
-    } else if (newPos.length === 2) {
-      const [newMeasureIdx, newNoteIdx] = newPos;
-      this.measures[mIdx].isActive = false;
-      this.measures[mIdx].notes[nIdx].isActive = false;
-      this.measures[newMeasureIdx].isActive = false;
-      this.measures[newMeasureIdx].notes[newNoteIdx].isActive = true;
-      this.curSelectionPos = newPos;
-    } else if (newPos.length === 3) {
-      const [newMeasureIdx, newNoteIdx, newNoteHeadIdx] = newPos;
-      this.measures[mIdx].isActive = false;
-      this.measures[mIdx].notes[nIdx].isActive = false;
-      this.measures[mIdx].notes[nIdx].noteHeads[nhIdx].isActive = false;
-      this.measures[newMeasureIdx].isActive = false;
-      this.measures[newMeasureIdx].notes[newNoteIdx].isActive = false;
-      this.measures[newMeasureIdx].notes[newNoteIdx].noteHeads[
-        newNoteHeadIdx
-      ].isActive = true;
-      this.curSelectionPos = newPos;
     }
+    if (this.curSelectionPos.length > 3) {
+      throw new Error(
+        'Invalid current position length' +
+          this.curSelectionPos +
+          newPos +
+          this.selectionType
+      );
+    }
+    const [mIdx, nIdx, nhIdx] = this.curSelectionPos;
+    // deactivate current selection
+    if (typeof mIdx === 'number') {
+      this.measures[mIdx].isActive = false;
+      if (typeof nIdx === 'number') {
+        this.measures[mIdx].notes[nIdx].isActive = false;
+        if (typeof nhIdx === 'number') {
+          this.measures[mIdx].notes[nIdx].noteHeads[nhIdx].isActive = false;
+        }
+      }
+    }
+    const [newMeasureIdx, newNoteIdx, newNoteHeadIdx] = newPos;
+    // activate new selection
+    if (typeof newMeasureIdx === 'number') {
+      if (typeof newNoteIdx === 'number') {
+        if (typeof newNoteHeadIdx === 'number') {
+          this.measures[newMeasureIdx].notes[newNoteIdx].noteHeads[
+            newNoteHeadIdx
+          ].isActive = true;
+        } else {
+          this.measures[newMeasureIdx].notes[newNoteIdx].isActive = true;
+        }
+      } else {
+        this.measures[newMeasureIdx].isActive = true;
+      }
+    }
+
+    this.curSelectionPos = newPos;
   };
 
   initMeasures = () => {
@@ -199,7 +197,7 @@ export class RootStore {
       [[1, 2, 3]],
       [
         [1, 2, 3],
-        [13, 14],
+        [9, 7],
       ],
       [[1, 2, 3, 16]],
       [[9, 4, 5]],
